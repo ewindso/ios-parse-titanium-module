@@ -1,0 +1,18 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+version: 1.0
+apiversion: 2
+description: My module
+author: Your Name
+license: Specify your license
+copyright: Copyright (c) 2012 by Your Company
+
+
+# these should not be edited
+name: parsemodule
+moduleid: com.elijahwindsor.parsemodule
+guid: febf0ea8-3279-4573-abd6-17e72fa89b9a
+platform: iphone
+minsdk: 2.1.4.GA
