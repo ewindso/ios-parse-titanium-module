@@ -11,6 +11,9 @@
 
 @interface ParseSingleton : NSObject
 
+typedef void (^CallbackBlock)(id object, NSError *error);
+typedef void (^CallbackBlockWithExtra)(id extra, id object, NSError *error);
+
 +(ParseSingleton *)sharedParseSingleton;
 -(void)setApplicationId:(NSString *)appId clientKey:(NSString *)clientKey;
 
@@ -32,5 +35,11 @@
 
 // PFCloud
 -(void)callCloudFunction:(NSString *)functionName withParameters:(NSDictionary *)parameters andCallback:(void(^)(id object, NSError *error))callbackBlock;
+
+
+// PFTwitterUtils
+-(void)setupTwitterWithConsumerKey:(NSString *)consumerKey andConsumerSecret:(NSString *)consumerSecret;
+-(void)twitterLoginWithCallback:(CallbackBlock)callbackBlock;
+-(void)twitterApiWithUrlString:(NSString *)urlString andMethod:(NSString *)method andData:(NSDictionary *)data withCallback:(CallbackBlockWithExtra)callbackBlock;
 
 @end

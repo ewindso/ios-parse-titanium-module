@@ -274,6 +274,7 @@ static ParseSingleton *sharedSingleton;
     if([PFUser currentUser] == nil) {
         return nil;
     }
+    
     return [self convertPFObjectToNSDictionary:[PFUser currentUser]];
 }
 
@@ -298,6 +299,69 @@ static ParseSingleton *sharedSingleton;
             object = [self convertPFObjectToNSDictionary:object];
         }
         callbackBlock(object, error);
+    }];
+}
+
+#pragma mark -
+#pragma mark PFTwitterUtils
+-(void)setupTwitterWithConsumerKey:(NSString *)consumerKey andConsumerSecret:(NSString *)consumerSecret {
+    
+    [PFTwitterUtils initializeWithConsumerKey:consumerKey consumerSecret:consumerSecret];
+}
+
+-(void)twitterLoginWithCallback:(CallbackBlock)callbackBlock {
+    [PFTwitterUtils logInWithBlock:^(PFUser *user, NSError *error) {
+        if(error) {
+            callbackBlock(nil, error);
+        } else {
+            if (!user) {
+                callbackBlock(nil, nil);
+                return;
+            }
+            
+            NSDictionary *userDic = [self convertPFObjectToNSDictionary:user];
+            
+            if(user.isNew) {
+                callbackBlock(userDic, nil);
+            } else {
+                callbackBlock(userDic, nil);
+            }
+        }
+    }];
+}
+
+-(void)twitterApiWithUrlString:(NSString *)urlString andMethod:(NSString *)method andData:(NSDictionary *)data withCallback:(CallbackBlockWithExtra)callbackBlock {
+    
+    if(data && [[method uppercaseString] isEqualToString:@"GET"]) {
+        // go through nsdictionary
+        NSArray *keys = [data allKeys];
+        
+        for(NSInteger i = 0; i < [keys count]; i++) {
+            NSString *curKey = [keys objectAtIndex:i];
+            NSString *curVal = [data objectForKey:curKey];
+            
+            NSString *appendPrefix = @"&";
+            
+            if(i == 0) {
+                appendPrefix = @"?";
+            }
+            
+            urlString = [NSString stringWithFormat:@"%@%@%@=%@", urlString, appendPrefix, curKey, curVal];
+        }
+    }
+    
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request setHTTPMethod:method];
+    
+    [[PFTwitterUtils twitter] signRequest:request];
+
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+
+        NSString *dataString = [NSString stringWithUTF8String:[data bytes]];
+        
+        callbackBlock(response, dataString, error);
     }];
 }
 

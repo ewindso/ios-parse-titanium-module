@@ -284,6 +284,48 @@
     }];
 }
 
+#pragma mark -
+#pragma mark Twitter
+-(void)setupTwitter:(id)args {
+    ENSURE_ARG_COUNT(args, 1);
+    
+    __block ComElijahwindsorParsemoduleModule *selfRef = self;
+    
+    NSDictionary *dic = [args objectAtIndex:0];
+    NSString *consumerKey = [dic objectForKey:@"consumerKey"];
+    NSString *consumerSecret = [dic objectForKey:@"consumerSecret"];
+    
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    [ps setupTwitterWithConsumerKey:consumerKey andConsumerSecret:consumerSecret];
+}
+
+-(void)twitterLogin:(id)args {
+    ENSURE_UI_THREAD(twitterLogin, args);
+    
+    ENSURE_ARG_COUNT(args, 1);
+    
+    __block ComElijahwindsorParsemoduleModule *selfRef = self;
+    
+    KrollCallback *callback = [args objectAtIndex:0];
+    
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+   
+    [ps twitterLoginWithCallback:^(id user, NSError *error) {
+        NSDictionary *result;
+        
+        if(user) {
+            result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", [error userInfo], @"error", nil];
+        } else {
+            result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
+        }
+        
+        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+    }];
+}
+/*    [parseSingleton twitterLoginWithCallback:^(id object, NSError *error) {
+ NSLog(@"Info: %@, %@", object, error);
+ }];*/
+
 
 -(id)example:(id)args
 {
