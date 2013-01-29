@@ -168,7 +168,11 @@ static ParseSingleton *sharedSingleton;
             continue;
         }
         
-        if([curValue isKindOfClass:[PFObject class]]) {
+        if([curValue isKindOfClass:[PFFile class]]) {
+            PFFile *curFile = curValue;
+            
+            curValue = [NSDictionary dictionaryWithObjectsAndKeys:curFile.name, @"name", curFile.url, @"url", @"_File", @"_className", nil];
+        } else if([curValue isKindOfClass:[PFObject class]]) {
             PFObject *curPFObj = curValue;
             
             NSString *className = [curPFObj className];
@@ -188,9 +192,45 @@ static ParseSingleton *sharedSingleton;
     return [dict autorelease];
 }
 
+
+-(NSDictionary *)convertPFFileToNSDictionary:(PFFile *)curFile {
+    
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+
+    // assign id
+    [dict setValue:curFile.name forKey:@"name"];
+    [dict setValue:curFile.url forKey:@"url"];
+    
+    // remember className
+    [dict setValue:@"File" forKey:@"_className"];
+    
+    return [dict autorelease];
+}
+
+
 -(void)updateObjectWithClassName:(NSString *)className andObjectId:(NSString *)objectId andProperties:(NSDictionary *)properties andCallback:(void(^)(BOOL, NSError *))callbackBlock {
     PFObject *obj = [PFObject objectWithoutDataWithClassName:className objectId:objectId];
-    [obj setValuesForKeysWithDictionary:properties];
+    
+    NSMutableDictionary *mutableProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
+    // go through to ensure we don't set a _File object
+    NSArray *keys = [mutableProperties allKeys];
+    NSEnumerator *e = [keys objectEnumerator];
+    id object;
+
+    while (object = [e nextObject]) {
+        id value = [mutableProperties objectForKey:object];
+        
+        if([value isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *curDic = (NSDictionary *)value;
+            NSString *className = [curDic objectForKey:@"_className"];
+            
+            if(className && [className isEqualToString:@"_File"]) {
+                [mutableProperties removeObjectForKey:object];
+            }
+        }
+    }
+    
+    [obj setValuesForKeysWithDictionary:mutableProperties];
     
     [obj saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         callbackBlock(succeeded, error);
@@ -228,6 +268,33 @@ static ParseSingleton *sharedSingleton;
     [newObj removeObjectForKey:@"_objectId"];
 
     [self deleteObjectWithClassName:className andObjectId:objectId andCallback:callbackBlock];
+}
+
+#pragma mark -
+#pragma mark PFFile
+-(void)createFileWithName:(NSString *)name andData:(NSData *)data andAttachmentInfo:(NSDictionary *)attachmentInfo withCallback:(void(^)(NSDictionary *, NSError *))callbackBlock {
+    PFFile *fileObj = [PFFile fileWithName:name data:data];
+    
+    [fileObj saveInBackgroundWithBlock:^(BOOL success, NSError *error) {
+        if(success) {
+            // use attachment info to attach to PFObject
+            NSDictionary *attachToDic = [attachmentInfo objectForKey:@"object"];
+            NSString *attachForKey = [attachmentInfo objectForKey:@"key"];
+
+            PFObject *attachToObj = [PFObject objectWithoutDataWithClassName:[attachToDic objectForKey:@"_className"] objectId:[attachToDic objectForKey:@"_objectId"]];
+            [attachToObj setValue:fileObj forKey:attachForKey];
+            
+            [attachToObj saveInBackgroundWithBlock:^(BOOL success, NSError *error) {
+                if(success) {
+                    callbackBlock([self convertPFObjectToNSDictionary:attachToObj], error);
+                } else {
+                    callbackBlock(nil, error);
+                }
+            }];
+        } else {
+            callbackBlock(nil, error);
+        }
+    }];
 }
 
 
@@ -278,6 +345,10 @@ static ParseSingleton *sharedSingleton;
     return [self convertPFObjectToNSDictionary:[PFUser currentUser]];
 }
 
+-(void)refreshCurrentUser {
+    [[PFUser currentUser]refresh];
+}
+
 #pragma mark -
 #pragma mark PFCloud
 -(void)callCloudFunction:(NSString *)functionName withParameters:(NSDictionary *)parameters andCallback:(void(^)(id object, NSError *error))callbackBlock {
@@ -300,6 +371,79 @@ static ParseSingleton *sharedSingleton;
         }
         callbackBlock(object, error);
     }];
+}
+
+#pragma mark -
+#pragma mark PFFacebookUtils
+-(void)setupFacebookWithAppId:(NSString *)appId {
+    [PFFacebookUtils initializeWithApplicationId:appId];
+}
+
+-(void)facebookLoginWithPermissions:(NSArray *)permissions andCallback:(CallbackBlock)callbackBlock {
+    [PFFacebookUtils logInWithPermissions:permissions block:^(PFUser *user, NSError *error) {
+
+        if(error) {
+            callbackBlock(nil, error);
+        } else {
+            if (!user) {
+                callbackBlock(nil, nil);
+                return;
+            }
+            
+            NSDictionary *userDic = [self convertPFObjectToNSDictionary:user];
+            
+            if(user.isNew) {
+                callbackBlock(userDic, nil);
+            } else {
+                callbackBlock(userDic, nil);
+            }
+        }
+        
+    }];
+
+}
+
+-(void)doFbRequestWithPath:(NSString *)path andCallback:(CallbackBlock)callbackBlock {
+    NSLog(@"Going to do it");
+    PF_FBRequest *request = [PF_FBRequest requestForGraphPath:path];
+    NSLog(@"About to start with path: %@", path);
+    [request startWithCompletionHandler:^(PF_FBRequestConnection *connection, id result, NSError *error) {
+        NSLog(@"Hey there");
+        if (!error) {
+            NSDictionary *userData = (NSDictionary *)result; // The result is a dictionary
+            callbackBlock(userData, nil);
+        } else {
+            callbackBlock(nil, error);
+        }
+    }];
+    NSLog(@"It started");
+}
+
+-(void)handleOpenURL:(NSURL *)url {
+    [PFFacebookUtils handleOpenURL:url];
+}
+
+-(NSString *)getFbAccessToken {
+    PF_FBSession *session = [PFFacebookUtils session];
+
+    return session.accessToken;
+}
+
+-(void)showFacebookDialog:(NSString *)dialog withParams:(NSDictionary *)params {
+    PF_FBSession *session = [PFFacebookUtils session];
+    
+    PF_Facebook *facebook = [[PF_Facebook alloc] initWithAppId:session.appID
+                                                   andDelegate:nil];
+    
+    // Store the Facebook session information
+    facebook.accessToken = session.accessToken;
+    facebook.expirationDate = session.expirationDate;
+    
+    NSMutableDictionary *finalParams = [NSMutableDictionary dictionaryWithDictionary:params];
+    
+    [facebook dialog:dialog andParams:finalParams andDelegate:nil];
+    
+    [facebook release];
 }
 
 #pragma mark -

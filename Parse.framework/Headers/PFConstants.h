@@ -6,7 +6,7 @@
 @class PFUser;
 
 // Version
-#define PARSE_VERSION @"1.1.21"
+#define PARSE_VERSION @"1.1.26"
 
 extern NSInteger const PARSE_API_VERSION;
 

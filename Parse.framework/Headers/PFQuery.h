@@ -258,6 +258,7 @@
  @param query The query the value should not match
  */
 - (void)whereKey:(NSString *)key doesNotMatchQuery:(PFQuery *)query;
+
 #pragma mark -
 #pragma mark Sorting
 

@@ -192,11 +192,48 @@
 }
 
 #pragma mark -
+#pragma mark PFFile
+-(void)createFile:(id)args {
+    ENSURE_ARG_COUNT(args, 2);
+    
+    __block ComElijahwindsorParsemoduleModule *selfRef = self;
+    NSDictionary *fileInfo = [args objectAtIndex:0];
+    KrollCallback *callback = [args objectAtIndex:1];
+    
+    NSString *name = [fileInfo objectForKey:@"name"];
+    TiBlob *blob = [fileInfo objectForKey:@"data"];
+    NSDictionary *attachmentInfo = [fileInfo objectForKey:@"attachmentInfo"];
+        
+    NSData *data = [blob data];
+    
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    [ps createFileWithName:name andData:data andAttachmentInfo:attachmentInfo withCallback:^(NSDictionary *fileObj, NSError *error) {
+        NSDictionary *result;
+        
+        if(fileObj) {
+           result = [NSDictionary dictionaryWithObjectsAndKeys:fileObj, @"object", [error userInfo], @"error", nil];
+        } else {
+           result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];            
+        }
+        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+    }];
+}
+
+#pragma mark -
 #pragma mark User
 -(id)currentUser {
     ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
     
     return [ps currentUser];
+}
+
+-(id)refreshUser:(id)args {
+    ENSURE_ARG_COUNT(args, 0);
+    
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    [ps refreshCurrentUser];
+    
+    return [ps currentUser];    
 }
 
 -(void)signupUser:(id)args {
@@ -285,6 +322,103 @@
 }
 
 #pragma mark -
+#pragma mark Facebook
+-(void)setupFacebook:(id)args {
+    ENSURE_ARG_COUNT(args, 1);
+
+    __block ComElijahwindsorParsemoduleModule *selfRef = self;
+    
+    NSString *facebookAppId = [args objectAtIndex:0];
+    
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    [ps setupFacebookWithAppId:facebookAppId];
+}
+
+-(void)facebookLogin:(id)args {
+    ENSURE_UI_THREAD(facebookLogin, args);
+    ENSURE_ARG_COUNT(args, 2);
+    
+    __block ComElijahwindsorParsemoduleModule *selfRef = self;
+    
+    NSDictionary *dic = [args objectAtIndex:0];
+    NSArray *permissions = [dic objectForKey:@"permissions"];
+    
+    if(fbCallback) {
+        [fbCallback release];
+        fbCallback = nil;
+    }
+    fbCallback = [[args objectAtIndex:1]retain];
+
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    [ps facebookLoginWithPermissions:permissions andCallback:^(id user, NSError *error) {
+        NSLog(@"Facebook Callback called");
+        
+        NSLog(@"Facebook Error: %@", [error userInfo]);
+        
+        NSDictionary *result = nil;
+        
+        if(user) {
+            result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", nil];
+        } else {
+            result = [NSDictionary dictionaryWithObjectsAndKeys:@"FBError", @"error", nil];
+        }
+        
+        // I use [args objectAtIndex:1] incase fbCallback is nulled already
+        [selfRef _fireEventToListener:@"completed" withObject:result listener:[args objectAtIndex:1] thisObject:nil];
+        
+        if(fbCallback) {
+
+            [fbCallback release];
+            
+            fbCallback = nil;
+        }
+    }];
+}
+
+-(void)doFbRequest:(id)args {
+    ENSURE_ARG_COUNT(args, 2);
+
+    __block ComElijahwindsorParsemoduleModule *selfRef = self;
+
+    NSString *path = [args objectAtIndex:0];
+
+    KrollCallback *callback = [args objectAtIndex:1];
+    
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    
+    [ps doFbRequestWithPath:path andCallback:^(id object, NSError *error) {
+        NSDictionary *result;
+        
+        if(object) {
+            result = [NSDictionary dictionaryWithObjectsAndKeys:object, @"response", [error userInfo], @"error", nil];
+        } else {
+            result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
+        }
+        
+        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+    }];
+}
+
+-(id)fbAccessToken {
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+
+    return [ps getFbAccessToken];
+}
+
+-(void)showFacebookDialog:(id)args {
+    ENSURE_UI_THREAD(showFacebookDialog, args);
+    
+    ENSURE_ARG_COUNT(args, 2);
+    
+    NSString *dialog = [args objectAtIndex:0];
+    NSDictionary *params = [args objectAtIndex:1];
+    
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    
+    [ps showFacebookDialog:dialog withParams:params];
+}
+
+#pragma mark -
 #pragma mark Twitter
 -(void)setupTwitter:(id)args {
     ENSURE_ARG_COUNT(args, 1);
@@ -326,6 +460,40 @@
  NSLog(@"Info: %@, %@", object, error);
  }];*/
 
+-(void)resumed:(id)note
+{
+	NSDictionary *launchOptions = [[TiApp app] launchOptions];
+    
+	if (launchOptions!=nil)
+	{
+		NSString *urlString = [launchOptions objectForKey:@"url"];
+
+		if (urlString!=nil && [urlString hasPrefix:@"fb"])
+		{
+			// if we're resuming under the same URL, we need to ignore
+			if (lastFbUrl!=nil && [urlString isEqualToString:lastFbUrl])
+			{
+				return;
+			}
+			RELEASE_TO_NIL(lastFbUrl);
+			lastFbUrl = [urlString copy];
+            
+            ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+            [ps handleOpenURL:[NSURL URLWithString:lastFbUrl]];
+            
+            return;
+		}
+	}
+    
+    // ignore fbCallback is they resume 1.) from web/fb app without cancel/accept or 2.) after ios6 native-login
+    // if they resume without touching a FB button, call it with nil
+/*    if(fbCallback) {
+        [self _fireEventToListener:@"completed" withObject:nil listener:fbCallback thisObject:nil];
+        [fbCallback release];
+        
+        fbCallback = nil;
+    }*/
+}
 
 -(id)example:(id)args
 {
@@ -338,6 +506,22 @@
 	// example property getter
 	return @"hello world";
 }
+/*
+-(id)hasIos6WithFbAccount {
+    float iosVersion = [[[UIDevice currentDevice] systemVersion]floatValue];
+    
+    if(iosVersion >= 6.0) {
+        ACAccountStore *store = [[ACAccountStore alloc]init];
+        ACAccountType *fbAccountType = [store accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+        NSArray *fbAccounts = [store accountsWithAccountType:fbAccountType];
+
+        if(fbAccounts.count > 0) {
+            return [NSNumber numberWithBool:YES];
+        }
+        [store release];
+    }
+    return [NSNumber numberWithBool:NO];
+}*/
 
 -(void)setExampleProp:(id)value
 {

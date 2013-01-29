@@ -48,7 +48,7 @@
 		7FD56CD41676F2460029704E /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD56CC71676F2460029704E /* MobileCoreServices.framework */; };
 		7FD56CD51676F2460029704E /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD56CC81676F2460029704E /* QuartzCore.framework */; };
 		7FD56CD61676F2460029704E /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD56CC91676F2460029704E /* Security.framework */; };
-		7FD56CD71676F2460029704E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD56CCA1676F2460029704E /* Social.framework */; };
+		7FD56CD71676F2460029704E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD56CCA1676F2460029704E /* Social.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		7FD56CD81676F2460029704E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD56CCB1676F2460029704E /* StoreKit.framework */; };
 		7FD56CD91676F2460029704E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD56CCC1676F2460029704E /* SystemConfiguration.framework */; };
 		7FD56CE31676F6B40029704E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FD56CC01676F2460029704E /* Accounts.framework */; };
@@ -738,6 +738,7 @@
 				7FD56CAF1676E7110029704E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -15,6 +15,7 @@
 #import "PFGeoPoint.h"
 #import "PFObject.h"
 #import "PFQuery.h"
+#import "PFQuery+NSPredicate.h"
 #import "PFRelation.h"
 #import "PFRole.h"
 #import "PFUser.h"

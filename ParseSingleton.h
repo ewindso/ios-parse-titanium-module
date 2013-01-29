@@ -26,16 +26,27 @@ typedef void (^CallbackBlockWithExtra)(id extra, id object, NSError *error);
 -(void)deleteObjectWithClassName:(NSString *)className andObjectId:(NSString *)objectId andCallback:(void(^)(BOOL, NSError *))callbackBlock;
 -(void)deleteObject:(NSDictionary *)object withCallback:(void(^)(BOOL, NSError *))callbackBlock;
 
+// PFFile
+-(void)createFileWithName:(NSString *)name andData:(NSData *)data andAttachmentInfo:(NSDictionary *)attachmentInfo withCallback:(void(^)(NSDictionary *, NSError *))callbackBlock;
+
 // PFUser
 -(void)signupUserWithUsername:(NSString *)username andPassword:(NSString *)password andEmail:(NSString *)email andCallback:(void(^)(NSDictionary *, NSError *))callbackBlock;
 -(void)signupUserWithUsername:(NSString *)username andPassword:(NSString *)password andCallback:(void(^)(NSDictionary *, NSError *))callbackBlock;
 -(void)loginWithUsername:(NSString *)username andPassword:(NSString *)password andCallback:(void(^)(NSDictionary *, NSError *))callbackBlock;
 -(NSDictionary *)currentUser;
+-(void)refreshCurrentUser;
 -(void)logout;
 
 // PFCloud
 -(void)callCloudFunction:(NSString *)functionName withParameters:(NSDictionary *)parameters andCallback:(void(^)(id object, NSError *error))callbackBlock;
 
+// PFFacebookUtils
+-(void)setupFacebookWithAppId:(NSString *)appId;
+-(void)facebookLoginWithPermissions:(NSArray *)permissions andCallback:(CallbackBlock)callbackBlock;
+-(void)doFbRequestWithPath:(NSString *)path andCallback:(CallbackBlock)callbackBlock;
+-(void)handleOpenURL:(NSURL *)url;
+-(NSString *)getFbAccessToken;
+-(void)showFacebookDialog:(NSString *)dialog withParams:(NSDictionary *)params;
 
 // PFTwitterUtils
 -(void)setupTwitterWithConsumerKey:(NSString *)consumerKey andConsumerSecret:(NSString *)consumerSecret;

@@ -25,4 +25,4 @@
 //
 // IMPORTANT NOTE: always use $(inherited) in your overrides
 //
-OTHER_LDFLAGS=$(inherited) -F"/Users/ewindsor/Documents/Titanium Studio Workspace/parsemodule" -framework Parse -framework Accounts -framework AdSupport -framework AudioToolbox -framework CFNetwork -framework CoreLocation -framework MobileCoreServices -framework QuartzCore -framework Security -framework Social -framework StoreKit -framework SystemConfiguration -framework Foundation -framework UIKit -framework CoreGraphics
+OTHER_LDFLAGS=$(inherited) /usr/lib/libsqlite3.dylib /usr/lib/libz.1.1.3.dylib -F"/Users/ewindsor/Documents/Titanium Studio Workspace/parsemodule" -framework Parse -weak_framework Accounts -framework AdSupport -framework AudioToolbox -framework CFNetwork -framework CoreLocation -framework MobileCoreServices -framework QuartzCore -framework Security -weak_framework Social -framework StoreKit -framework SystemConfiguration -framework Foundation -framework UIKit -framework CoreGraphics
