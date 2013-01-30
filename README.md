@@ -1,4 +1,4 @@
-iOS Parse Module for Appcelerator Titanium
+iOS Parse.com Module for Appcelerator Titanium
 ===========================================
 Make sure your tiapp.xml has this: 
 
