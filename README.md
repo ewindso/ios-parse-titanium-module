@@ -139,3 +139,14 @@ Twitter
 			...
 		}
 	});
+	
+Cloud Code:
+------------
+	parse.callCloudFunction('FUNCTION NAME', {
+		PARAM1: 'VALUE1'  // your parameters here	
+	}, function(result) {
+		if(result.error) { // errror }
+		else {
+			// use result.object
+		}
+	});
