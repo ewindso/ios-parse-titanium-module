@@ -33,6 +33,7 @@ typedef void (^CallbackBlockWithExtra)(id extra, id object, NSError *error);
 -(void)signupUserWithUsername:(NSString *)username andPassword:(NSString *)password andEmail:(NSString *)email andCallback:(void(^)(NSDictionary *, NSError *))callbackBlock;
 -(void)signupUserWithUsername:(NSString *)username andPassword:(NSString *)password andCallback:(void(^)(NSDictionary *, NSError *))callbackBlock;
 -(void)loginWithUsername:(NSString *)username andPassword:(NSString *)password andCallback:(void(^)(NSDictionary *, NSError *))callbackBlock;
+-(void)requestPasswordResetForEmail:(NSString *)email;
 -(NSDictionary *)currentUser;
 -(void)refreshCurrentUser;
 -(void)logout;

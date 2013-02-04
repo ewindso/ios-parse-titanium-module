@@ -332,6 +332,9 @@ static ParseSingleton *sharedSingleton;
         }
     }];
 }
+-(void)requestPasswordResetForEmail:(NSString *)email {
+    [PFUser requestPasswordResetForEmail:email];
+}
 
 -(void)logout {
     [PFUser logOut];

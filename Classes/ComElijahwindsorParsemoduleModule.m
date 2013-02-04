@@ -287,7 +287,16 @@
         
         [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
     }];
-   
+}
+
+-(void)requestPasswordReset:(id)args {
+    ENSURE_ARG_COUNT(args, 1);
+    
+    NSDictionary *userArgs = [args objectAtIndex:0];
+    NSString *email = [userArgs objectForKey:@"email"];
+    
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    [ps requestPasswordResetForEmail:email];
 }
 
 -(void)logout:(id)args {

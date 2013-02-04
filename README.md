@@ -1,5 +1,10 @@
 iOS Parse.com Module for Appcelerator Titanium
 ===========================================
+
+Feel free to download com.elijahwindsor.parsemodule.iphone-1.0.zip to use it as-is without compiling.  
+
+To compile, clone the repository, and edit module.xcconfig and change -F"/Users/ewindsor/Documents/Titanium Studio Workspace/parsemodule" to the fulle path of where you have cloned the repository.
+
 Make sure your tiapp.xml has this: 
 
 	<module platform="iphone">com.elijahwindsor.parsemodule</module>
@@ -97,6 +102,24 @@ Current User
 	parse.currentUser will refer to the current user, and null if there's not one.
 
 	Also, you can use parse.refreshUser() to ensure parse.currentUser contains the latest user info.
+
+
+Request Password Reset
+------------
+	parse.requestPasswordReset({
+		email: 'some@email.com'
+	}); 
+
+	A user with this email is assumed to exist.  You can check before making this call by using 
+
+	parse.findObjects('_User', [
+		{key: 'email', condition: '==', value: 'some@email.com'}
+	], function(data) {
+		if(data.results && data.results.length > 0) { // the user exists
+
+		}
+	});
+
 
 Upload a File
 ------------
