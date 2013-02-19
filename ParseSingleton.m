@@ -135,6 +135,10 @@ static ParseSingleton *sharedSingleton;
             [query whereKey:key containedIn:value];
         } else if([condition isEqualToString:@"not in"]) {
             [query whereKey:key notContainedIn:value];
+        } else if([condition isEqualToString:@"orderby"] && [value isEqualToString:@"asc"]) {
+            [query orderByAscending:key];
+        } else if([condition isEqualToString:@"orderby"] && [value isEqualToString:@"desc"]) {
+            [query orderByDescending:key];
         }
     }
     
