@@ -68,7 +68,8 @@ You can also do multiple conditions:
 	parse.findObjects('Game', [
 		{key: 'level', condition: '>=', value: 1}, 
 		{key: 'level', condition: '<=', value: 5}, 
-		{key: 'status', condition: '==', value: 'live'}
+		{key: 'status', condition: '==', value: 'live'},
+		{key: 'position', condition: 'orderby', value: 'asc'}
 	], function(data) {  ... });
 
 
