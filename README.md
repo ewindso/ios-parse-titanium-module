@@ -1,7 +1,7 @@
 iOS Parse.com Module for Appcelerator Titanium
 ===========================================
 
-Feel free to download com.elijahwindsor.parsemodule.iphone-1.0.zip to use it as-is without compiling.  
+Feel free to download com.elijahwindsor.parsemodule.iphone-1.0.zip to use it as-is without compiling.  However, you'll still need to clone this repository somewhere, and change a line in module.xcconfig (as shown below).
 
 To compile, clone the repository, and edit module.xcconfig and change -F"/Users/ewindsor/Documents/Titanium Studio Workspace/parsemodule" to the fulle path of where you have cloned the repository.
 
