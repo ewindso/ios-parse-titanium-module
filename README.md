@@ -205,6 +205,10 @@ To register for push notifications unique token should be retrieved from the dev
 		]
 	});
 	
-	
 
+Unsubscribing from channel:
+	
+	parse.unsubscribeFromPush('sampleChannel', function(data) {
+		// alert(data);
+	});
 
