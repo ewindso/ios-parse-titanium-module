@@ -174,3 +174,37 @@ Cloud Code:
 			// use result.object
 		}
 	});
+	
+	
+Push Notifications:
+------------
+For more info on Parse Push Notifications at setting up SSL push certificates : [https://parse.com/tutorials/ios-push-notifications](https://parse.com/tutorials/ios-push-notifications)
+
+To register for push notifications unique token should be retrieved from the device.
+	
+	Ti.Network.registerForPushNotifications({
+		callback: function pushCallback(e)
+		{},
+		success: function pushSuccess(e)
+		{
+			deviceToken = e.deviceToken;
+			parse.registerForPush(deviceToken, 'sampleChannel', function(data) {
+				// output some data to check for success / errors
+				// alert(data);
+			});
+		},
+		error: function pushError(e)
+		{
+			// If unable to get deviceToken check for errors here
+			// alert('Error!: '+JSON.stringify(e));
+		},
+		types: [
+			Ti.Network.NOTIFICATION_TYPE_BADGE,
+			Ti.Network.NOTIFICATION_TYPE_ALERT,
+			Ti.Network.NOTIFICATION_TYPE_SOUND
+		]
+	});
+	
+	
+
+
