@@ -532,8 +532,16 @@ static ParseSingleton *sharedSingleton;
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation addUniqueObject:channel forKey:@"channels"];
-    // [currentInstallation saveInBackground];
     
+    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        callbackBlock(succeeded, error);
+    }];
+}
+
+- (void)unsubscribeFromPushChannel:(NSString *)channel withCallback:(void(^)(BOOL, NSError *))callbackBlock {
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation removeObject:channel forKey:@"channels"];
+
     [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         callbackBlock(succeeded, error);
     }];

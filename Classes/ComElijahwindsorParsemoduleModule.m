@@ -514,15 +514,26 @@
 	KrollCallback *callback = [args objectAtIndex:2];
 
 	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-
 	[ps registerForPushWithDeviceToken:deviceToken andSubscribeToChannel:channel withCallback:^(BOOL success, NSError *error){
-	   
 	   NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:success], @"success", [error userInfo], @"error", nil];
 	   [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-	   
 	}];
 }
 
+-(void)unsubscribeFromPush:(id)args {
+	ENSURE_ARG_COUNT(args, 2);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+
+	NSString *channel = [args objectAtIndex:0];
+	KrollCallback *callback = [args objectAtIndex:1];
+
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps unsubscribeFromPushChannel:channel withCallback:^(BOOL success, NSError *error){
+	   NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:success], @"success", [error userInfo], @"error", nil];
+	   [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
+}
 
 -(id)example:(id)args
 {
