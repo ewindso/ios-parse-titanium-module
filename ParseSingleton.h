@@ -9,10 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <Parse/Parse.h>
 
-@interface ParseSingleton : NSObject
+@interface ParseSingleton : NSObject<PF_FBDialogDelegate>
 
 typedef void (^CallbackBlock)(id object, NSError *error);
 typedef void (^CallbackBlockWithExtra)(id extra, id object, NSError *error);
+typedef void (^SimpleCallbackBlock)(BOOL completed);
+
+@property(retain, nonatomic) PF_Facebook *facebook;  // used in cases where it has a delegate and needs to be retained
+@property(copy, nonatomic) SimpleCallbackBlock fbDialogCallback;  // used for PF_FBDialogDelegate
 
 +(ParseSingleton *)sharedParseSingleton;
 -(void)setApplicationId:(NSString *)appId clientKey:(NSString *)clientKey;
@@ -47,7 +51,7 @@ typedef void (^CallbackBlockWithExtra)(id extra, id object, NSError *error);
 -(void)doFbRequestWithPath:(NSString *)path andCallback:(CallbackBlock)callbackBlock;
 -(void)handleOpenURL:(NSURL *)url;
 -(NSString *)getFbAccessToken;
--(void)showFacebookDialog:(NSString *)dialog withParams:(NSDictionary *)params;
+-(void)showFacebookDialog:(NSString *)dialog withParams:(NSDictionary *)params andCallback:(SimpleCallbackBlock)callbackBlock;
 
 // PFTwitterUtils
 -(void)setupTwitterWithConsumerKey:(NSString *)consumerKey andConsumerSecret:(NSString *)consumerSecret;

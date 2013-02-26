@@ -10,6 +10,9 @@
 
 @implementation ParseSingleton
 
+@synthesize facebook;
+@synthesize fbDialogCallback;
+
 static ParseSingleton *sharedSingleton;
 
 +(ParseSingleton *)sharedParseSingleton {
@@ -436,21 +439,22 @@ static ParseSingleton *sharedSingleton;
     return session.accessToken;
 }
 
--(void)showFacebookDialog:(NSString *)dialog withParams:(NSDictionary *)params {
+-(void)showFacebookDialog:(NSString *)dialog withParams:(NSDictionary *)params andCallback:(SimpleCallbackBlock)callbackBlock {
     PF_FBSession *session = [PFFacebookUtils session];
     
-    PF_Facebook *facebook = [[PF_Facebook alloc] initWithAppId:session.appID
+    facebook = [[PF_Facebook alloc] initWithAppId:session.appID
                                                    andDelegate:nil];
+    
+    fbDialogCallback = [callbackBlock copy];
     
     // Store the Facebook session information
     facebook.accessToken = session.accessToken;
     facebook.expirationDate = session.expirationDate;
     
     NSMutableDictionary *finalParams = [NSMutableDictionary dictionaryWithDictionary:params];
+    [finalParams setObject:session.appID forKey:@"appid"];
     
-    [facebook dialog:dialog andParams:finalParams andDelegate:nil];
-    
-    [facebook release];
+    [facebook dialog:dialog andParams:finalParams andDelegate:self];    
 }
 
 #pragma mark -
@@ -514,6 +518,30 @@ static ParseSingleton *sharedSingleton;
         
         callbackBlock(response, dataString, error);
     }];
+}
+
+#pragma mark PF_FBDialogDelegate methods
+- (void)dialogCompleteWithUrl:(NSURL *)url {
+    BOOL completed = YES;
+
+    // Fix for FB-bug where they hit the Cancel button, but it still says "did complete"
+    if([url.absoluteString rangeOfString:@"request"].location == NSNotFound) {
+        completed = NO;
+    }
+    
+    if(fbDialogCallback) {
+        fbDialogCallback(completed);
+    }
+    [fbDialogCallback release];
+    [facebook release];
+}
+
+- (void)dialogDidNotComplete:(PF_FBDialog *)dialog {
+    if(fbDialogCallback) {
+        fbDialogCallback(false);
+    }
+    [fbDialogCallback release];
+    [facebook release];
 }
 
 

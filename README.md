@@ -150,6 +150,21 @@ Facebook
 	  }
 	});
 
+Facebook Dialog
+------------
+
+	parse.showFacebookDialog('apprequests', {
+		to: '1112311,32423423', // comma separated facebook ids
+		message: "Check out Nomii"   // required
+	}, function(response) {
+		if(response.completed) { // they've sent the apprequests
+
+		} else {  // they hit "cancel" or the "X"
+
+		}
+	});
+} 
+
 
 Twitter
 ------------

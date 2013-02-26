@@ -417,14 +417,21 @@
 -(void)showFacebookDialog:(id)args {
     ENSURE_UI_THREAD(showFacebookDialog, args);
     
-    ENSURE_ARG_COUNT(args, 2);
+    __block ComElijahwindsorParsemoduleModule *selfRef = self;
+    
+    ENSURE_ARG_COUNT(args, 3);
     
     NSString *dialog = [args objectAtIndex:0];
     NSDictionary *params = [args objectAtIndex:1];
+    KrollCallback *callback = [args objectAtIndex:2];
     
     ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
     
-    [ps showFacebookDialog:dialog withParams:params];
+    [ps showFacebookDialog:dialog withParams:params andCallback:^(BOOL completed) {
+        NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:completed], @"completed", nil];
+
+        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+    }];
 }
 
 #pragma mark -
