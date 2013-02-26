@@ -72,6 +72,23 @@ You can also do multiple conditions:
 		{key: 'position', condition: 'orderby', value: 'asc'}
 	], function(data) {  ... });
 
+Save All Objects
+------------
+	// for example, this one starts with findObjects
+	parse.findObjects('Test', [], function(data) {
+	  var objectArray = data.results; 
+	
+	  // assuming there are at least 2 objects in the array
+	  objectArray[0].key = 'Another value';
+	  objectArray[1].key = 'Yet another value';
+	  
+	  // now you can save them all at the same time here
+	  parse.saveAllObjects(objectArray, function(data) {
+	    if(data.success) { // yay!
+	
+	    }
+	  });
+	}); 
 
 Signup User
 ------------

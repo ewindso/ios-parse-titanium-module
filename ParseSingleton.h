@@ -29,6 +29,7 @@ typedef void (^SimpleCallbackBlock)(BOOL completed);
 -(void)updateObject:(NSDictionary *)object withCallback:(void(^)(BOOL, NSError *))callbackBlock;
 -(void)deleteObjectWithClassName:(NSString *)className andObjectId:(NSString *)objectId andCallback:(void(^)(BOOL, NSError *))callbackBlock;
 -(void)deleteObject:(NSDictionary *)object withCallback:(void(^)(BOOL, NSError *))callbackBlock;
+-(void)saveAllObjects:(NSArray *)objects withCallback:(void(^)(BOOL, NSError *))callbackBlock;
 
 // PFFile
 -(void)createFileWithName:(NSString *)name andData:(NSData *)data andAttachmentInfo:(NSDictionary *)attachmentInfo withCallback:(void(^)(NSDictionary *, NSError *))callbackBlock;

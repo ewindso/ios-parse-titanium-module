@@ -87,6 +87,28 @@ static ParseSingleton *sharedSingleton;
         
         if(className && objectId) { // let's make it a PFObject
             PFObject *pfObj = [PFObject objectWithoutDataWithClassName:className objectId:objectId];
+            
+            // go through and assign keys
+            NSArray *keys = [obj allKeys];
+            NSEnumerator *e = [keys objectEnumerator];
+            id key;
+            
+            while (key = [e nextObject]) {
+                id curValue = [obj objectForKey:key];
+                
+                if([key isEqualToString:@"_className"] || [key isEqualToString:@"_objectId"]) {
+                    continue;
+                }
+                
+                // ignore ACL as we don't have a format set up to conver to JS yet
+                if([curValue isKindOfClass:[NSString class]] ||
+                   [curValue isKindOfClass:[NSNumber class]] ||
+                   [curValue isKindOfClass:[NSArray class]] ||
+                   [curValue isKindOfClass:[NSDictionary class]]) {
+                    
+                    [pfObj setObject:curValue forKey:key];
+                }
+            }
             return pfObj;
         }
     }
@@ -107,17 +129,6 @@ static ParseSingleton *sharedSingleton;
         
         callbackBlock(dic, error);
     }];
-}
-
--(void)saveAllObjectsOfClassName:(NSString *)className withArray:(NSArray *)objects andCallback:(void(^)(NSArray *, NSError *))callbackBlock {
-
-
-    // for(NSInteger i = 0; i < [objects count]; i++) {
-    //     PFObject *obj = [PFObject objectWithClassName:className];
-    //     NSMutableDictionary *finalProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
-    //     NSArray *keys = [finalProperties allKeys];
-    // }
-
 }
 
 -(void)findObjectsOfClassName:(NSString *)className withCriteria:(NSArray *)criteria andCallback:(void(^)(NSArray *, NSError *))callbackBlock {
@@ -286,6 +297,21 @@ static ParseSingleton *sharedSingleton;
     [newObj removeObjectForKey:@"_objectId"];
 
     [self deleteObjectWithClassName:className andObjectId:objectId andCallback:callbackBlock];
+}
+
+-(void)saveAllObjects:(NSArray *)objects withCallback:(void(^)(BOOL, NSError *))callbackBlock {
+    NSMutableArray *objectArray = [[NSMutableArray alloc]init];
+    
+    for(NSInteger i = 0; i < [objects count]; i++) {
+        PFObject *curObject = [self convertToPFObjectIfNeededWithObject:[objects objectAtIndex:i]];
+        [objectArray addObject:curObject];
+    }
+    
+    [PFObject saveAllInBackground:objectArray block:^(BOOL succeeded, NSError *error) {
+        callbackBlock(succeeded, error);
+        
+        [objectArray release];
+    }];
 }
 
 #pragma mark -

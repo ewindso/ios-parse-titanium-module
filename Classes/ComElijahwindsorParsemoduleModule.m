@@ -191,6 +191,20 @@
 	}];
 }
 
+-(void)saveAllObjects:(id)args {
+	ENSURE_ARG_COUNT(args, 2);
+
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	NSArray *objects = [args objectAtIndex:0];
+	KrollCallback *callback = [args objectAtIndex:1];
+    
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    [ps saveAllObjects:objects withCallback:^(BOOL success, NSError *error) {
+        NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:success], @"success", [error userInfo], @"error", nil];
+        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+    }];
+}
+
 #pragma mark -
 #pragma mark PFFile
 -(void)createFile:(id)args {
