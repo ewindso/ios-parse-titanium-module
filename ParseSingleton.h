@@ -58,4 +58,8 @@ typedef void (^SimpleCallbackBlock)(BOOL completed);
 -(void)twitterLoginWithCallback:(CallbackBlock)callbackBlock;
 -(void)twitterApiWithUrlString:(NSString *)urlString andMethod:(NSString *)method andData:(NSDictionary *)data withCallback:(CallbackBlockWithExtra)callbackBlock;
 
+// PFPush
+- (void)registerForPushWithDeviceToken:(NSString *)deviceToken andSubscribeToChannel:(NSString *)channel withCallback:(void(^)(BOOL, NSError *))callbackBlock;
+- (void)unsubscribeFromPushChannel:(NSString *)channel withCallback:(void(^)(BOOL, NSError *))callbackBlock;
+
 @end

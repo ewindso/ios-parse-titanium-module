@@ -109,6 +109,17 @@ static ParseSingleton *sharedSingleton;
     }];
 }
 
+-(void)saveAllObjectsOfClassName:(NSString *)className withArray:(NSArray *)objects andCallback:(void(^)(NSArray *, NSError *))callbackBlock {
+
+
+    // for(NSInteger i = 0; i < [objects count]; i++) {
+    //     PFObject *obj = [PFObject objectWithClassName:className];
+    //     NSMutableDictionary *finalProperties = [NSMutableDictionary dictionaryWithDictionary:properties];
+    //     NSArray *keys = [finalProperties allKeys];
+    // }
+
+}
+
 -(void)findObjectsOfClassName:(NSString *)className withCriteria:(NSArray *)criteria andCallback:(void(^)(NSArray *, NSError *))callbackBlock {
     
     PFQuery *query = [PFQuery queryWithClassName:className];
@@ -520,6 +531,26 @@ static ParseSingleton *sharedSingleton;
     }];
 }
 
+- (void)registerForPushWithDeviceToken:(NSString *)deviceToken andSubscribeToChannel:(NSString *)channel withCallback:(void(^)(BOOL, NSError *))callbackBlock {
+    // Store the deviceToken in the current Installation and save it to Parse.
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    [currentInstallation addUniqueObject:channel forKey:@"channels"];
+    
+    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        callbackBlock(succeeded, error);
+    }];
+}
+
+- (void)unsubscribeFromPushChannel:(NSString *)channel withCallback:(void(^)(BOOL, NSError *))callbackBlock {
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation removeObject:channel forKey:@"channels"];
+    
+    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+        callbackBlock(succeeded, error);
+    }];
+}
+
 #pragma mark PF_FBDialogDelegate methods
 - (void)dialogCompleteWithUrl:(NSURL *)url {
     BOOL completed = YES;
@@ -543,6 +574,5 @@ static ParseSingleton *sharedSingleton;
     [fbDialogCallback release];
     [facebook release];
 }
-
 
 @end

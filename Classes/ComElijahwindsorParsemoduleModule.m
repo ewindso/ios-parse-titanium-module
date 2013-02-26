@@ -87,331 +87,331 @@
 #pragma Public APIs
 
 -(void)initParse:(id)args {
-    ENSURE_ARG_COUNT(args, 1);
-    
-    NSDictionary *argsDic = [args objectAtIndex:0];
-    
-    NSString *appId = [argsDic objectForKey:@"appId"];
-    NSString *clientKey = [argsDic objectForKey:@"clientKey"];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps setApplicationId:appId clientKey:clientKey];
+	ENSURE_ARG_COUNT(args, 1);
+	
+	NSDictionary *argsDic = [args objectAtIndex:0];
+	
+	NSString *appId = [argsDic objectForKey:@"appId"];
+	NSString *clientKey = [argsDic objectForKey:@"clientKey"];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps setApplicationId:appId clientKey:clientKey];
 }
 
 -(void)createObject:(id)args {
-    ENSURE_ARG_COUNT(args, 3);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    
-    NSString *className = [args objectAtIndex:0];
-    NSDictionary *properties = [args objectAtIndex:1];
-    KrollCallback *callback = [args objectAtIndex:2];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps createObjectWithClassName:className andProperties:properties andCallback:^(NSDictionary *obj, NSError *error) {
-        
-        NSDictionary *result;
-        
-        if(obj != nil) {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:obj, @"object", [error userInfo], @"error", nil];
-        } else {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
-        }
-        
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+	ENSURE_ARG_COUNT(args, 3);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	
+	NSString *className = [args objectAtIndex:0];
+	NSDictionary *properties = [args objectAtIndex:1];
+	KrollCallback *callback = [args objectAtIndex:2];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps createObjectWithClassName:className andProperties:properties andCallback:^(NSDictionary *obj, NSError *error) {
+		
+		NSDictionary *result;
+		
+		if(obj != nil) {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:obj, @"object", [error userInfo], @"error", nil];
+		} else {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
+		}
+		
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 -(void)findObjects:(id)args {
-    ENSURE_ARG_COUNT(args, 3);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    
-    NSString *className = [args objectAtIndex:0];
-    NSArray *criteria = [args objectAtIndex:1];
-    KrollCallback *callback = [args objectAtIndex:2];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps findObjectsOfClassName:className withCriteria:criteria andCallback:^(NSArray *results, NSError *error) {
-        NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:results, @"results", [error userInfo], @"error", nil];
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+	ENSURE_ARG_COUNT(args, 3);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	
+	NSString *className = [args objectAtIndex:0];
+	NSArray *criteria = [args objectAtIndex:1];
+	KrollCallback *callback = [args objectAtIndex:2];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps findObjectsOfClassName:className withCriteria:criteria andCallback:^(NSArray *results, NSError *error) {
+		NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:results, @"results", [error userInfo], @"error", nil];
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 -(void)fetchObject:(id)args {
-    ENSURE_ARG_COUNT(args, 2);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    
-    NSDictionary *obj = [args objectAtIndex:0];
-    KrollCallback *callback = [args objectAtIndex:1];
-    
-    NSString *className = [obj objectForKey:@"_className"];
-    NSString *objectId = [obj objectForKey:@"_objectId"];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps fetchObjectOfClassName:className andObjectId:objectId andCallback:^(NSDictionary *obj, NSError *error) {
-        NSDictionary *result;
-        
-        if(obj) {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:obj, @"object", [error userInfo], @"error", nil];
-        } else {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
-        }
+	ENSURE_ARG_COUNT(args, 2);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	
+	NSDictionary *obj = [args objectAtIndex:0];
+	KrollCallback *callback = [args objectAtIndex:1];
+	
+	NSString *className = [obj objectForKey:@"_className"];
+	NSString *objectId = [obj objectForKey:@"_objectId"];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps fetchObjectOfClassName:className andObjectId:objectId andCallback:^(NSDictionary *obj, NSError *error) {
+		NSDictionary *result;
+		
+		if(obj) {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:obj, @"object", [error userInfo], @"error", nil];
+		} else {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
+		}
 
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 -(void)updateObject:(id)args {
-    ENSURE_ARG_COUNT(args, 2);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    NSDictionary *object = [args objectAtIndex:0];
-    KrollCallback *callback = [args objectAtIndex:1];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps updateObject:object withCallback:^(BOOL success, NSError *error) {
-        NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:success], @"success", [error userInfo], @"error", nil];
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+	ENSURE_ARG_COUNT(args, 2);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	NSDictionary *object = [args objectAtIndex:0];
+	KrollCallback *callback = [args objectAtIndex:1];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps updateObject:object withCallback:^(BOOL success, NSError *error) {
+		NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:success], @"success", [error userInfo], @"error", nil];
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 -(void)deleteObject:(id)args {
-    ENSURE_ARG_COUNT(args, 2);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    NSDictionary *object = [args objectAtIndex:0];
-    KrollCallback *callback = [args objectAtIndex:1];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps deleteObject:object withCallback:^(BOOL success, NSError *error) {
-        NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:success], @"success", [error userInfo], @"error", nil];
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+	ENSURE_ARG_COUNT(args, 2);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	NSDictionary *object = [args objectAtIndex:0];
+	KrollCallback *callback = [args objectAtIndex:1];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps deleteObject:object withCallback:^(BOOL success, NSError *error) {
+		NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:success], @"success", [error userInfo], @"error", nil];
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 #pragma mark -
 #pragma mark PFFile
 -(void)createFile:(id)args {
-    ENSURE_ARG_COUNT(args, 2);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    NSDictionary *fileInfo = [args objectAtIndex:0];
-    KrollCallback *callback = [args objectAtIndex:1];
-    
-    NSString *name = [fileInfo objectForKey:@"name"];
-    TiBlob *blob = [fileInfo objectForKey:@"data"];
-    NSDictionary *attachmentInfo = [fileInfo objectForKey:@"attachmentInfo"];
-        
-    NSData *data = [blob data];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps createFileWithName:name andData:data andAttachmentInfo:attachmentInfo withCallback:^(NSDictionary *fileObj, NSError *error) {
-        NSDictionary *result;
-        
-        if(fileObj) {
-           result = [NSDictionary dictionaryWithObjectsAndKeys:fileObj, @"object", [error userInfo], @"error", nil];
-        } else {
-           result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];            
-        }
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+	ENSURE_ARG_COUNT(args, 2);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	NSDictionary *fileInfo = [args objectAtIndex:0];
+	KrollCallback *callback = [args objectAtIndex:1];
+	
+	NSString *name = [fileInfo objectForKey:@"name"];
+	TiBlob *blob = [fileInfo objectForKey:@"data"];
+	NSDictionary *attachmentInfo = [fileInfo objectForKey:@"attachmentInfo"];
+		
+	NSData *data = [blob data];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps createFileWithName:name andData:data andAttachmentInfo:attachmentInfo withCallback:^(NSDictionary *fileObj, NSError *error) {
+		NSDictionary *result;
+		
+		if(fileObj) {
+		   result = [NSDictionary dictionaryWithObjectsAndKeys:fileObj, @"object", [error userInfo], @"error", nil];
+		} else {
+		   result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];            
+		}
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 #pragma mark -
 #pragma mark User
 -(id)currentUser {
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    
-    return [ps currentUser];
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	
+	return [ps currentUser];
 }
 
 -(id)refreshUser:(id)args {
-    ENSURE_ARG_COUNT(args, 0);
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps refreshCurrentUser];
-    
-    return [ps currentUser];    
+	ENSURE_ARG_COUNT(args, 0);
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps refreshCurrentUser];
+	
+	return [ps currentUser];    
 }
 
 -(void)signupUser:(id)args {
-    ENSURE_ARG_COUNT(args, 2);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    
-    NSDictionary *userArgs = [args objectAtIndex:0];
-    KrollCallback *callback = [args objectAtIndex:1];
-    
-    NSString *username = [userArgs objectForKey:@"username"];
-    NSString *password = [userArgs objectForKey:@"password"];
-    NSString *email = [userArgs objectForKey:@"email"];
+	ENSURE_ARG_COUNT(args, 2);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	
+	NSDictionary *userArgs = [args objectAtIndex:0];
+	KrollCallback *callback = [args objectAtIndex:1];
+	
+	NSString *username = [userArgs objectForKey:@"username"];
+	NSString *password = [userArgs objectForKey:@"password"];
+	NSString *email = [userArgs objectForKey:@"email"];
 
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps signupUserWithUsername:username andPassword:password andEmail:email andCallback:^(NSDictionary *user, NSError *error) {
-        NSDictionary *result;
-        
-        if(user) {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", [error userInfo], @"error", nil];
-        } else {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
-        }
-        
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
-    
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps signupUserWithUsername:username andPassword:password andEmail:email andCallback:^(NSDictionary *user, NSError *error) {
+		NSDictionary *result;
+		
+		if(user) {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", [error userInfo], @"error", nil];
+		} else {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
+		}
+		
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
+	
 }
 
 -(void)loginUser:(id)args {
-    ENSURE_ARG_COUNT(args, 2);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    
-    NSDictionary *userArgs = [args objectAtIndex:0];
-    KrollCallback *callback = [args objectAtIndex:1];
-    
-    NSString *username = [userArgs objectForKey:@"username"];
-    NSString *password = [userArgs objectForKey:@"password"];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps loginWithUsername:username andPassword:password andCallback:^(NSDictionary *user, NSError *error) {
-        
-        NSDictionary *result;
-        
-        if(user) {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", [error userInfo], @"error", nil];
-        } else {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
-        }
-        
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+	ENSURE_ARG_COUNT(args, 2);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	
+	NSDictionary *userArgs = [args objectAtIndex:0];
+	KrollCallback *callback = [args objectAtIndex:1];
+	
+	NSString *username = [userArgs objectForKey:@"username"];
+	NSString *password = [userArgs objectForKey:@"password"];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps loginWithUsername:username andPassword:password andCallback:^(NSDictionary *user, NSError *error) {
+		
+		NSDictionary *result;
+		
+		if(user) {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", [error userInfo], @"error", nil];
+		} else {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
+		}
+		
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 -(void)requestPasswordReset:(id)args {
-    ENSURE_ARG_COUNT(args, 1);
-    
-    NSDictionary *userArgs = [args objectAtIndex:0];
-    NSString *email = [userArgs objectForKey:@"email"];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps requestPasswordResetForEmail:email];
+	ENSURE_ARG_COUNT(args, 1);
+	
+	NSDictionary *userArgs = [args objectAtIndex:0];
+	NSString *email = [userArgs objectForKey:@"email"];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps requestPasswordResetForEmail:email];
 }
 
 -(void)logout:(id)args {
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps logout];
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps logout];
 }
 
 #pragma mark -
 #pragma mark PFCloud
 -(void)callCloudFunction:(id)args {
-    ENSURE_ARG_COUNT(args, 3);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
+	ENSURE_ARG_COUNT(args, 3);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
 
-    NSString *functionName = [args objectAtIndex:0];
-    NSDictionary *parameters = [args objectAtIndex:1];
-    KrollCallback *callback = [args objectAtIndex:2];
+	NSString *functionName = [args objectAtIndex:0];
+	NSDictionary *parameters = [args objectAtIndex:1];
+	KrollCallback *callback = [args objectAtIndex:2];
 
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps callCloudFunction:functionName withParameters:parameters andCallback:^(id object, NSError *error) {
-        
-        NSDictionary *result;
-        
-        if(object) {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:object, @"object", [error userInfo], @"error", nil];
-        } else {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
-        }
-        
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps callCloudFunction:functionName withParameters:parameters andCallback:^(id object, NSError *error) {
+		
+		NSDictionary *result;
+		
+		if(object) {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:object, @"object", [error userInfo], @"error", nil];
+		} else {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
+		}
+		
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 #pragma mark -
 #pragma mark Facebook
 -(void)setupFacebook:(id)args {
-    ENSURE_ARG_COUNT(args, 1);
+	ENSURE_ARG_COUNT(args, 1);
 
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    
-    NSString *facebookAppId = [args objectAtIndex:0];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps setupFacebookWithAppId:facebookAppId];
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	
+	NSString *facebookAppId = [args objectAtIndex:0];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps setupFacebookWithAppId:facebookAppId];
 }
 
 -(void)facebookLogin:(id)args {
-    ENSURE_UI_THREAD(facebookLogin, args);
-    ENSURE_ARG_COUNT(args, 2);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    
-    NSDictionary *dic = [args objectAtIndex:0];
-    NSArray *permissions = [dic objectForKey:@"permissions"];
-    
-    if(fbCallback) {
-        [fbCallback release];
-        fbCallback = nil;
-    }
-    fbCallback = [[args objectAtIndex:1]retain];
+	ENSURE_UI_THREAD(facebookLogin, args);
+	ENSURE_ARG_COUNT(args, 2);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	
+	NSDictionary *dic = [args objectAtIndex:0];
+	NSArray *permissions = [dic objectForKey:@"permissions"];
+	
+	if(fbCallback) {
+		[fbCallback release];
+		fbCallback = nil;
+	}
+	fbCallback = [[args objectAtIndex:1]retain];
 
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps facebookLoginWithPermissions:permissions andCallback:^(id user, NSError *error) {
-        NSLog(@"Facebook Callback called");
-        
-        NSLog(@"Facebook Error: %@", [error userInfo]);
-        
-        NSDictionary *result = nil;
-        
-        if(user) {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", nil];
-        } else {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:@"FBError", @"error", nil];
-        }
-        
-        // I use [args objectAtIndex:1] incase fbCallback is nulled already
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:[args objectAtIndex:1] thisObject:nil];
-        
-        if(fbCallback) {
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps facebookLoginWithPermissions:permissions andCallback:^(id user, NSError *error) {
+		NSLog(@"Facebook Callback called");
+		
+		NSLog(@"Facebook Error: %@", [error userInfo]);
+		
+		NSDictionary *result = nil;
+		
+		if(user) {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", nil];
+		} else {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:@"FBError", @"error", nil];
+		}
+		
+		// I use [args objectAtIndex:1] incase fbCallback is nulled already
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:[args objectAtIndex:1] thisObject:nil];
+		
+		if(fbCallback) {
 
-            [fbCallback release];
-            
-            fbCallback = nil;
-        }
-    }];
+			[fbCallback release];
+			
+			fbCallback = nil;
+		}
+	}];
 }
 
 -(void)doFbRequest:(id)args {
-    ENSURE_ARG_COUNT(args, 2);
+	ENSURE_ARG_COUNT(args, 2);
 
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
 
-    NSString *path = [args objectAtIndex:0];
+	NSString *path = [args objectAtIndex:0];
 
-    KrollCallback *callback = [args objectAtIndex:1];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    
-    [ps doFbRequestWithPath:path andCallback:^(id object, NSError *error) {
-        NSDictionary *result;
-        
-        if(object) {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:object, @"response", [error userInfo], @"error", nil];
-        } else {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
-        }
-        
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+	KrollCallback *callback = [args objectAtIndex:1];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	
+	[ps doFbRequestWithPath:path andCallback:^(id object, NSError *error) {
+		NSDictionary *result;
+		
+		if(object) {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:object, @"response", [error userInfo], @"error", nil];
+		} else {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
+		}
+		
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 -(id)fbAccessToken {
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
 
-    return [ps getFbAccessToken];
+	return [ps getFbAccessToken];
 }
 
 -(void)showFacebookDialog:(id)args {
@@ -437,40 +437,40 @@
 #pragma mark -
 #pragma mark Twitter
 -(void)setupTwitter:(id)args {
-    ENSURE_ARG_COUNT(args, 1);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    
-    NSDictionary *dic = [args objectAtIndex:0];
-    NSString *consumerKey = [dic objectForKey:@"consumerKey"];
-    NSString *consumerSecret = [dic objectForKey:@"consumerSecret"];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-    [ps setupTwitterWithConsumerKey:consumerKey andConsumerSecret:consumerSecret];
+	ENSURE_ARG_COUNT(args, 1);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	
+	NSDictionary *dic = [args objectAtIndex:0];
+	NSString *consumerKey = [dic objectForKey:@"consumerKey"];
+	NSString *consumerSecret = [dic objectForKey:@"consumerSecret"];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps setupTwitterWithConsumerKey:consumerKey andConsumerSecret:consumerSecret];
 }
 
 -(void)twitterLogin:(id)args {
-    ENSURE_UI_THREAD(twitterLogin, args);
-    
-    ENSURE_ARG_COUNT(args, 1);
-    
-    __block ComElijahwindsorParsemoduleModule *selfRef = self;
-    
-    KrollCallback *callback = [args objectAtIndex:0];
-    
-    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	ENSURE_UI_THREAD(twitterLogin, args);
+	
+	ENSURE_ARG_COUNT(args, 1);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+	
+	KrollCallback *callback = [args objectAtIndex:0];
+	
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
    
-    [ps twitterLoginWithCallback:^(id user, NSError *error) {
-        NSDictionary *result;
-        
-        if(user) {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", [error userInfo], @"error", nil];
-        } else {
-            result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
-        }
-        
-        [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
-    }];
+	[ps twitterLoginWithCallback:^(id user, NSError *error) {
+		NSDictionary *result;
+		
+		if(user) {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:user, @"user", [error userInfo], @"error", nil];
+		} else {
+			result = [NSDictionary dictionaryWithObjectsAndKeys:[error userInfo], @"error", nil];
+		}
+		
+		[selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 /*    [parseSingleton twitterLoginWithCallback:^(id object, NSError *error) {
  NSLog(@"Info: %@, %@", object, error);
@@ -479,7 +479,7 @@
 -(void)resumed:(id)note
 {
 	NSDictionary *launchOptions = [[TiApp app] launchOptions];
-    
+	
 	if (launchOptions!=nil)
 	{
 		NSString *urlString = [launchOptions objectForKey:@"url"];
@@ -493,22 +493,53 @@
 			}
 			RELEASE_TO_NIL(lastFbUrl);
 			lastFbUrl = [urlString copy];
-            
-            ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
-            [ps handleOpenURL:[NSURL URLWithString:lastFbUrl]];
-            
-            return;
+			
+			ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+			[ps handleOpenURL:[NSURL URLWithString:lastFbUrl]];
+			
+			return;
 		}
 	}
-    
-    // ignore fbCallback is they resume 1.) from web/fb app without cancel/accept or 2.) after ios6 native-login
-    // if they resume without touching a FB button, call it with nil
+	
+	// ignore fbCallback is they resume 1.) from web/fb app without cancel/accept or 2.) after ios6 native-login
+	// if they resume without touching a FB button, call it with nil
 /*    if(fbCallback) {
-        [self _fireEventToListener:@"completed" withObject:nil listener:fbCallback thisObject:nil];
-        [fbCallback release];
-        
-        fbCallback = nil;
-    }*/
+		[self _fireEventToListener:@"completed" withObject:nil listener:fbCallback thisObject:nil];
+		[fbCallback release];
+		
+		fbCallback = nil;
+	}*/
+}
+
+-(void)registerForPush:(id)args {
+	ENSURE_ARG_COUNT(args, 3);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+
+	NSString *deviceToken = [args objectAtIndex:0];
+	NSString *channel = [args objectAtIndex:1];
+	KrollCallback *callback = [args objectAtIndex:2];
+
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps registerForPushWithDeviceToken:deviceToken andSubscribeToChannel:channel withCallback:^(BOOL success, NSError *error){
+	   NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:success], @"success", [error userInfo], @"error", nil];
+	   [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
+}
+
+-(void)unsubscribeFromPush:(id)args {
+	ENSURE_ARG_COUNT(args, 2);
+	
+	__block ComElijahwindsorParsemoduleModule *selfRef = self;
+
+	NSString *channel = [args objectAtIndex:0];
+	KrollCallback *callback = [args objectAtIndex:1];
+
+	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+	[ps unsubscribeFromPushChannel:channel withCallback:^(BOOL success, NSError *error){
+	   NSDictionary *result = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:success], @"success", [error userInfo], @"error", nil];
+	   [selfRef _fireEventToListener:@"completed" withObject:result listener:callback thisObject:nil];
+	}];
 }
 
 -(id)example:(id)args
@@ -524,19 +555,19 @@
 }
 /*
 -(id)hasIos6WithFbAccount {
-    float iosVersion = [[[UIDevice currentDevice] systemVersion]floatValue];
-    
-    if(iosVersion >= 6.0) {
-        ACAccountStore *store = [[ACAccountStore alloc]init];
-        ACAccountType *fbAccountType = [store accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
-        NSArray *fbAccounts = [store accountsWithAccountType:fbAccountType];
+	float iosVersion = [[[UIDevice currentDevice] systemVersion]floatValue];
+	
+	if(iosVersion >= 6.0) {
+		ACAccountStore *store = [[ACAccountStore alloc]init];
+		ACAccountType *fbAccountType = [store accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierFacebook];
+		NSArray *fbAccounts = [store accountsWithAccountType:fbAccountType];
 
-        if(fbAccounts.count > 0) {
-            return [NSNumber numberWithBool:YES];
-        }
-        [store release];
-    }
-    return [NSNumber numberWithBool:NO];
+		if(fbAccounts.count > 0) {
+			return [NSNumber numberWithBool:YES];
+		}
+		[store release];
+	}
+	return [NSNumber numberWithBool:NO];
 }*/
 
 -(void)setExampleProp:(id)value
