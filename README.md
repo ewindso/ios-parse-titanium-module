@@ -149,13 +149,31 @@ Facebook
 	  	...
 	  }
 	});
+	
+Facebook Link with Existing User
+------------
+
+	parse.facebookLinkWithUser({ 
+		user: parse.currentUser,   // most likely will pass in currentUser
+		permissions: ['email']  
+	}, function(data) { 
+		if(data.user) { // OK!  we're linked
+			
+		} else {
+			if(data.error == 'AlreadyLinked') {
+				// this means that the FB account they're trying to link to is already linked with another account, so no-can-do
+			} else {
+				// general error
+			}
+		}
+	});
 
 Facebook Dialog
 ------------
 
 	parse.showFacebookDialog('apprequests', {
 		to: '1112311,32423423', // comma separated facebook ids
-		message: "Check out Nomii"   // required
+		message: "Check out this app"   // required
 	}, function(response) {
 		if(response.completed) { // they've sent the apprequests
 

@@ -421,7 +421,26 @@ static ParseSingleton *sharedSingleton;
         }
         
     }];
+}
 
+-(void)facebookLinkWithUser:(NSDictionary *)user andPermissions:(NSArray *)permissions andCallback:(CallbackBlock)callbackBlock {
+    
+    PFUser *curUser = [self convertToPFObjectIfNeededWithObject:user];
+    
+    [PFFacebookUtils linkUser:curUser permissions:permissions block:^(BOOL succeeded, NSError *error) {
+        
+        if(error) {
+            callbackBlock(nil, error);
+        } else {
+            if (!user) {
+                callbackBlock(nil, nil);
+                return;
+            }
+            NSDictionary *userDic = [self convertPFObjectToNSDictionary:[PFUser currentUser]];
+            
+            callbackBlock(userDic, nil);
+        }
+    }];
 }
 
 -(void)doFbRequestWithPath:(NSString *)path andCallback:(CallbackBlock)callbackBlock {

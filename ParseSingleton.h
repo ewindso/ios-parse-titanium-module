@@ -48,6 +48,7 @@ typedef void (^SimpleCallbackBlock)(BOOL completed);
 // PFFacebookUtils
 -(void)setupFacebookWithAppId:(NSString *)appId;
 -(void)facebookLoginWithPermissions:(NSArray *)permissions andCallback:(CallbackBlock)callbackBlock;
+-(void)facebookLinkWithUser:(NSDictionary *)user andPermissions:(NSArray *)permissions andCallback:(CallbackBlock)callbackBlock;
 -(void)doFbRequestWithPath:(NSString *)path andCallback:(CallbackBlock)callbackBlock;
 -(void)handleOpenURL:(NSURL *)url;
 -(NSString *)getFbAccessToken;
