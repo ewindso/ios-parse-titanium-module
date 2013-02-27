@@ -421,6 +421,7 @@
             if(error.code == 208) {
                 result = [NSDictionary dictionaryWithObjectsAndKeys:@"AlreadyLinked", @"error", nil];                
             } else {
+                NSLog(@"Error code: %i", error.code);
                 result = [NSDictionary dictionaryWithObjectsAndKeys:@"FBError", @"error", nil];
             }
 		}
@@ -465,6 +466,10 @@
 	ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
 
 	return [ps getFbAccessToken];
+}
+
+-(void)closeFbSession:(id)args {
+    [[ParseSingleton sharedParseSingleton]closeFbSession];
 }
 
 -(void)showFacebookDialog:(id)args {
