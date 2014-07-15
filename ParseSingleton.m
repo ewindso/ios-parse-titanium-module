@@ -584,6 +584,14 @@ static ParseSingleton *sharedSingleton;
     }];
 }
 
+- (void)clearBadge {
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    if (currentInstallation.badge != 0) {
+        currentInstallation.badge = 0;
+        [currentInstallation saveEventually];
+    }
+}
+
 #pragma mark PF_FBDialogDelegate methods
 - (void)dialogCompleteWithUrl:(NSURL *)url {
     BOOL completed = YES;

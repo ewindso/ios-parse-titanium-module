@@ -271,3 +271,7 @@ Unsubscribing from channel:
 		// alert(data);
 	});
 
+Clearing the app badge (reset to 0) and persist on server:
+	
+	parse.clearBadge();
+	
