@@ -63,5 +63,6 @@ typedef void (^SimpleCallbackBlock)(BOOL completed);
 // PFPush
 - (void)registerForPushWithDeviceToken:(NSString *)deviceToken andSubscribeToChannel:(NSString *)channel withCallback:(void(^)(BOOL, NSError *))callbackBlock;
 - (void)unsubscribeFromPushChannel:(NSString *)channel withCallback:(void(^)(BOOL, NSError *))callbackBlock;
+- (void)clearBadge;
 
 @end

@@ -600,6 +600,13 @@
 	}];
 }
 
+-(void)clearBadge:(id)args{
+    ENSURE_ARG_COUNT(args, 0);
+    ParseSingleton *ps = [ParseSingleton sharedParseSingleton];
+    
+    [ps clearBadge];
+}
+
 -(id)example:(id)args
 {
 	// example method
